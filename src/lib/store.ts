@@ -71,10 +71,9 @@ export const demoHistory: NexaItem[] = [
   },
 ];
 
-export const demoSaved: NexaItem[] = [demoHistory[1], demoHistory[2]].map((item, i) => ({
-  ...item,
-  id: `saved-demo-${i + 1}`,
-}));
+export const demoSaved: NexaItem[] = demoHistory
+  .filter((item) => item.kind !== "email")
+  .map((item, i) => ({ ...item, id: `saved-demo-${i + 1}` }));
 
 function read(key: string, fallback: NexaItem[]): NexaItem[] {
   if (typeof window === "undefined") return fallback;
