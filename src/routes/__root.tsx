@@ -120,8 +120,44 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const RELOAD_FLAG = "nexa:chunk-reloaded";
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  // A stale tab can request an asset hash that a newer deploy removed, which
+  // surfaces as "Failed to fetch dynamically imported module" and a blank page.
+  // Reload once to pick up the current asset manifest.
+  useEffect(() => {
+    const isStaleChunkError = (message: string) =>
+      /dynamically imported module|Importing a module script failed|error loading dynamically imported module/i.test(
+        message,
+      );
+
+    const recover = (message: string) => {
+      if (!isStaleChunkError(message)) return;
+      if (sessionStorage.getItem(RELOAD_FLAG)) return;
+      sessionStorage.setItem(RELOAD_FLAG, "1");
+      window.location.reload();
+    };
+
+    const onPreloadError = (event: Event) => {
+      event.preventDefault();
+      recover(String((event as CustomEvent<{ message?: string }>).detail?.message ?? "dynamically imported module"));
+    };
+    const onError = (event: ErrorEvent) => recover(String(event.message ?? ""));
+    const onRejection = (event: PromiseRejectionEvent) =>
+      recover(String((event.reason as Error | undefined)?.message ?? event.reason ?? ""));
+
+    window.addEventListener("vite:preloadError", onPreloadError);
+    window.addEventListener("error", onError);
+    window.addEventListener("unhandledrejection", onRejection);
+    return () => {
+      window.removeEventListener("vite:preloadError", onPreloadError);
+      window.removeEventListener("error", onError);
+      window.removeEventListener("unhandledrejection", onRejection);
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
