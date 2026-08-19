@@ -14,6 +14,7 @@ import { Route as EmailRouteImport } from './routes/email'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as MeetingsRouteImport } from './routes/meetings'
 import { Route as ResearchRouteImport } from './routes/research'
+import { Route as SavedRouteImport } from './routes/saved'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const ResearchRoute = ResearchRouteImport.update({
   path: '/research',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SavedRoute = SavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/history': typeof HistoryRoute
   '/meetings': typeof MeetingsRoute
   '/research': typeof ResearchRoute
+  '/saved': typeof SavedRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/history': typeof HistoryRoute
   '/meetings': typeof MeetingsRoute
   '/research': typeof ResearchRoute
+  '/saved': typeof SavedRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,21 @@ export interface FileRoutesById {
   '/history': typeof HistoryRoute
   '/meetings': typeof MeetingsRoute
   '/research': typeof ResearchRoute
+  '/saved': typeof SavedRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/email' | '/history' | '/meetings' | '/research'
+  fullPaths: '/' | '/email' | '/history' | '/meetings' | '/research' | '/saved'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/email' | '/history' | '/meetings' | '/research'
-  id: '__root__' | '/' | '/email' | '/history' | '/meetings' | '/research'
+  to: '/' | '/email' | '/history' | '/meetings' | '/research' | '/saved'
+  id:
+    | '__root__'
+    | '/'
+    | '/email'
+    | '/history'
+    | '/meetings'
+    | '/research'
+    | '/saved'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +93,7 @@ export interface RootRouteChildren {
   HistoryRoute: typeof HistoryRoute
   MeetingsRoute: typeof MeetingsRoute
   ResearchRoute: typeof ResearchRoute
+  SavedRoute: typeof SavedRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +133,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResearchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/saved': {
+      id: '/saved'
+      path: '/saved'
+      fullPath: '/saved'
+      preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +149,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoryRoute: HistoryRoute,
   MeetingsRoute: MeetingsRoute,
   ResearchRoute: ResearchRoute,
+  SavedRoute: SavedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
