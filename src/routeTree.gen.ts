@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EmailRouteImport } from './routes/email'
+import { Route as HelpRouteImport } from './routes/help'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as MeetingsRouteImport } from './routes/meetings'
 import { Route as ResearchRouteImport } from './routes/research'
@@ -25,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const EmailRoute = EmailRouteImport.update({
   id: '/email',
   path: '/email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HistoryRoute = HistoryRouteImport.update({
@@ -56,6 +62,7 @@ const SettingsRoute = SettingsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/email': typeof EmailRoute
+  '/help': typeof HelpRoute
   '/history': typeof HistoryRoute
   '/meetings': typeof MeetingsRoute
   '/research': typeof ResearchRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/email': typeof EmailRoute
+  '/help': typeof HelpRoute
   '/history': typeof HistoryRoute
   '/meetings': typeof MeetingsRoute
   '/research': typeof ResearchRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/email': typeof EmailRoute
+  '/help': typeof HelpRoute
   '/history': typeof HistoryRoute
   '/meetings': typeof MeetingsRoute
   '/research': typeof ResearchRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/email'
+    | '/help'
     | '/history'
     | '/meetings'
     | '/research'
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/email'
+    | '/help'
     | '/history'
     | '/meetings'
     | '/research'
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/email'
+    | '/help'
     | '/history'
     | '/meetings'
     | '/research'
@@ -114,6 +126,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EmailRoute: typeof EmailRoute
+  HelpRoute: typeof HelpRoute
   HistoryRoute: typeof HistoryRoute
   MeetingsRoute: typeof MeetingsRoute
   ResearchRoute: typeof ResearchRoute
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/email'
       fullPath: '/email'
       preLoaderRoute: typeof EmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/history': {
@@ -178,6 +198,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EmailRoute: EmailRoute,
+  HelpRoute: HelpRoute,
   HistoryRoute: HistoryRoute,
   MeetingsRoute: MeetingsRoute,
   ResearchRoute: ResearchRoute,
